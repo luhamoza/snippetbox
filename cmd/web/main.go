@@ -7,9 +7,13 @@ import (
 
 func main() {
 	mux := http.NewServeMux()
-	mux.HandleFunc("/", homeHandler)
-	mux.HandleFunc("/snippet/create", snippetCreateHandler)
-	mux.HandleFunc("/snippet/view", snippetViewHandler)
+
+	fileServer := http.FileServer(http.Dir("./ui/static/"))
+	mux.Handle("/static/", http.StripPrefix("/static", fileServer))
+
+	mux.HandleFunc("/", home)
+	mux.HandleFunc("/snippet/create", snippetCreate)
+	mux.HandleFunc("/snippet/view", snippetView)
 	log.Print("Starting at server 4000...")
 	err := http.ListenAndServe(":4000", mux)
 	log.Fatal(err)
